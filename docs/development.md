@@ -50,6 +50,10 @@ or the filesystem.
 Use one tracer bullet at a time: red, green, then refactor. `npm run smoke`
 checks a real Home Assistant instance, but it does not replace automated tests.
 
+Real Home Assistant smoke checks stay local/manual because they require secrets
+and may expose personal data. CI-safe smoke behavior should be tested with fake
+Home Assistant responses, including envelope output and sanitized diagnostics.
+
 ## Coverage Gate
 
 Coverage is a guardrail for agentic coding. It does not justify brittle tests
