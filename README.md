@@ -154,7 +154,7 @@ Once the package is published to npm, the same server can be run via `npx`:
     "homeassistant-garmin": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "homeassistant-garmin-mcp"],
+      "args": ["-y", "@jhchein/homeassistant-garmin-mcp"],
       "env": {
         "HA_URL": "https://home-assistant.example.com",
         "HA_TOKEN": "replace-with-home-assistant-token"
