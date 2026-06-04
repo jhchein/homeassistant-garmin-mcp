@@ -15,9 +15,9 @@ export async function fetchHomeAssistantStates(config: AppConfig): Promise<HomeA
   const response = await fetch(`${config.haUrl}/api/states`, {
     headers: {
       Authorization: `Bearer ${config.haToken}`,
-      Accept: "application/json"
+      Accept: "application/json",
     },
-    signal: AbortSignal.timeout(config.requestTimeoutMs)
+    signal: AbortSignal.timeout(config.requestTimeoutMs),
   }).catch(() => {
     throw new HomeAssistantError("Home Assistant request failed.");
   });
@@ -68,11 +68,10 @@ function toHomeAssistantState(entry: unknown): HomeAssistantState | null {
     state,
     attributes: isRecord(entry["attributes"]) ? entry["attributes"] : {},
     last_changed: lastChanged,
-    last_updated: lastUpdated
+    last_updated: lastUpdated,
   };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-

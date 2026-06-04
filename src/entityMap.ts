@@ -23,7 +23,11 @@ export const ENTITY_DEFINITIONS: readonly EntityDefinition[] = [
   { section: "sleep", field: "rem_sleep", entityId: "sensor.garmin_connect_rem_sleep" },
   { section: "sleep", field: "light_sleep", entityId: "sensor.garmin_connect_light_sleep" },
   { section: "recovery", field: "training_readiness", entityId: "sensor.garmin_connect_training_readiness" },
-  { section: "recovery", field: "morning_training_readiness", entityId: "sensor.garmin_connect_morning_training_readiness" },
+  {
+    section: "recovery",
+    field: "morning_training_readiness",
+    entityId: "sensor.garmin_connect_morning_training_readiness",
+  },
   { section: "recovery", field: "training_status", entityId: "sensor.garmin_connect_training_status" },
   { section: "recovery", field: "recovery_time", entityId: "sensor.garmin_connect_recovery_time" },
   { section: "hrv", field: "status", entityId: "sensor.hrv_status" },
@@ -40,7 +44,12 @@ export const ENTITY_DEFINITIONS: readonly EntityDefinition[] = [
   { section: "stress", field: "high_duration", entityId: "sensor.high_stress_duration" },
   { section: "body_composition", field: "weight", entityId: "sensor.garmin_connect_weight", required: false },
   { section: "fitness", field: "fitness_age", entityId: "sensor.garmin_connect_fitness_age", required: false },
-  { section: "fitness", field: "achievable_fitness_age", entityId: "sensor.garmin_connect_achievable_fitness_age", required: false },
+  {
+    section: "fitness",
+    field: "achievable_fitness_age",
+    entityId: "sensor.garmin_connect_achievable_fitness_age",
+    required: false,
+  },
   { section: "fitness", field: "endurance_score", entityId: "sensor.garmin_connect_endurance_score", required: false },
   { section: "fitness", field: "hill_score", entityId: "sensor.garmin_connect_hill_score", required: false },
   { section: "fitness", field: "vo2_max", entityId: "sensor.garmin_connect_vo2_max", required: false },
@@ -49,23 +58,43 @@ export const ENTITY_DEFINITIONS: readonly EntityDefinition[] = [
     section: "fitness",
     field: "power_to_weight_cycling",
     entityId: "sensor.garmin_connect_power_to_weight_cycling",
-    required: false
+    required: false,
   },
   {
     section: "fitness",
     field: "lactate_threshold_heart_rate",
     entityId: "sensor.garmin_connect_lactate_threshold_heart_rate",
-    required: false
+    required: false,
   },
   {
     section: "activity",
     field: "weekly_distance_average",
     entityId: "sensor.garmin_connect_weekly_distance_average",
-    required: false
+    required: false,
   },
-  { section: "activity", field: "weekly_step_average", entityId: "sensor.garmin_connect_weekly_step_average", required: false },
-  { section: "activity", field: "yesterday_distance", entityId: "sensor.garmin_connect_yesterday_distance", required: false },
+  {
+    section: "activity",
+    field: "weekly_step_average",
+    entityId: "sensor.garmin_connect_weekly_step_average",
+    required: false,
+  },
+  {
+    section: "activity",
+    field: "yesterday_distance",
+    entityId: "sensor.garmin_connect_yesterday_distance",
+    required: false,
+  },
   { section: "activity", field: "yesterday_steps", entityId: "sensor.garmin_connect_yesterday_steps", required: false },
-  { section: "activity", field: "intensity_minutes", entityId: "sensor.garmin_connect_intensity_minutes", required: false },
-  { section: "activity", field: "last_activity_route", entityId: "sensor.garmin_connect_last_activity_route", required: false }
+  {
+    section: "activity",
+    field: "intensity_minutes",
+    entityId: "sensor.garmin_connect_intensity_minutes",
+    required: false,
+  },
+  {
+    section: "activity",
+    field: "last_activity_route",
+    entityId: "sensor.garmin_connect_last_activity_route",
+    required: false,
+  },
 ];

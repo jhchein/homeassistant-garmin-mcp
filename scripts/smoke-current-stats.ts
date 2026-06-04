@@ -15,7 +15,9 @@ try {
     console.error(`Smoke test configuration error: ${error.message}`);
   } else if (error instanceof HomeAssistantError && isAuthFailure(error.statusCode)) {
     console.error(`Smoke test authentication failed: Home Assistant rejected HA_TOKEN (HTTP ${error.statusCode}).`);
-    console.error("Create a fresh Home Assistant long-lived access token, set HA_TOKEN again, and rerun npm run smoke.");
+    console.error(
+      "Create a fresh Home Assistant long-lived access token, set HA_TOKEN again, and rerun npm run smoke.",
+    );
   } else if (error instanceof HomeAssistantError) {
     console.error(`Smoke test Home Assistant error: ${error.message}`);
   } else {

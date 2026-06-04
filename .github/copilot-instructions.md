@@ -1,6 +1,7 @@
 # homeassistant-garmin-mcp
 
-Minimal MCP server exposing Garmin-derived Home Assistant stats through a parameterless current-stats tool.
+Minimal MCP server exposing Garmin-derived Home Assistant stats through a
+parameterless current-stats tool.
 
 ## Stack
 
@@ -29,6 +30,7 @@ Issue tracker: GitHub Issues. Use `gh issue list/create/view`.
 
 - Do not add direct Garmin Connect authentication in v1.
 - Do not add writes, cache, database, or scheduler behavior in v1.
-- Do not include analytics, interpretations, caveats, or recommendations in MCP responses.
+- Do not include analytics, interpretations, caveats, or recommendations in MCP
+  responses.
 - Do not commit real Home Assistant URLs, tokens, or private examples.
 - Keep TypeScript/Node commands explicit and beginner-friendly.

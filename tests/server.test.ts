@@ -14,7 +14,7 @@ describe("getCurrentStatsEnvelope", () => {
   it("returns a full current-stats envelope from Home Assistant states", async () => {
     const fetchMock = stubStatesResponse([
       ...ENTITY_DEFINITIONS.map((definition, index) => state(definition.entityId, String(index + 1))),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z")
+      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z"),
     ]);
 
     const result = await getCurrentStatsEnvelope({
@@ -23,9 +23,9 @@ describe("getCurrentStatsEnvelope", () => {
         HA_REQUEST_TIMEOUT_MS: "1000",
         HA_STALE_AFTER_HOURS: "24",
         HA_TOKEN: "secret-token",
-        HA_URL: "https://ha.example.com/"
+        HA_URL: "https://ha.example.com/",
       },
-      envFilePath: null
+      envFilePath: null,
     });
 
     expect(result.status).toBe("full");
@@ -39,9 +39,9 @@ describe("getCurrentStatsEnvelope", () => {
       expect.objectContaining({
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer secret-token"
-        }
-      })
+          Authorization: "Bearer secret-token",
+        },
+      }),
     );
   });
 
@@ -51,7 +51,7 @@ describe("getCurrentStatsEnvelope", () => {
     expect(missingConfigResult).toMatchObject({
       captured_at: "2026-06-03T12:00:00.000Z",
       missing: ["home_assistant"],
-      status: "unavailable"
+      status: "unavailable",
     });
 
     stubResponse(new Response("unauthorized", { status: 401 }));
@@ -59,13 +59,13 @@ describe("getCurrentStatsEnvelope", () => {
     const authFailureResult = await getCurrentStatsEnvelope({
       capturedAt,
       env: { HA_TOKEN: "secret-token", HA_URL: "https://ha.example.com" },
-      envFilePath: null
+      envFilePath: null,
     });
 
     expect(authFailureResult).toMatchObject({
       captured_at: "2026-06-03T12:00:00.000Z",
       missing: ["home_assistant"],
-      status: "unavailable"
+      status: "unavailable",
     });
   });
 });
@@ -94,6 +94,6 @@ function state(entityId: string, value: string) {
     state: value,
     attributes: { unit_of_measurement: "units" },
     last_changed: currentUpdatedAt,
-    last_updated: currentUpdatedAt
+    last_updated: currentUpdatedAt,
   };
 }
