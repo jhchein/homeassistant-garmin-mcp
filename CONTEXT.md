@@ -65,6 +65,6 @@ _Avoid_: MCP server logic, coach inside the server
 
 - "Snapshot" sounded neat but was too generic for a public MCP server. Resolved:
   use **Current Stats** and the tool name `get_current_stats`.
-- "Wellbeing" is meaningful in the private consumer workflow but too loaded for
-  the public repo/tool surface. Resolved: public name is
+- "Wellbeing" is meaningful to some consumer agents but too loaded for the
+  public repo/tool surface. Resolved: public name is
   `homeassistant-garmin-mcp`.

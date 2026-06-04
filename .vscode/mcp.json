@@ -5,8 +5,7 @@
       "command": "node",
       "args": ["${workspaceFolder}/dist/index.js"],
       "env": {
-        "HA_URL": "https://home-assistant.example.com",
-        "HA_TOKEN": "replace-with-home-assistant-token"
+        "HA_ENV_FILE": "${workspaceFolder}/.env"
       }
     }
   }

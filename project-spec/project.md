@@ -3,15 +3,18 @@
 ## Overview
 
 - **Name**: homeassistant-garmin-mcp
-- **One-liner**: Minimal MCP server exposing Garmin-derived Home Assistant stats through a parameterless current-stats tool.
+- **One-liner**: Minimal MCP server exposing Garmin-derived Home Assistant stats
+  through a parameterless current-stats tool.
 
 ## Goals
 
 - Expose Garmin-derived Home Assistant entity state to MCP-compatible local agents.
 - Keep v1 minimal: one tool, `get_current_stats`, with no parameters.
-- Return factual normalized data with stable `status`, `captured_at`, `source`, `missing`, `stale`, and `stats` fields.
+- Return factual normalized data with stable `status`, `captured_at`,
+  `source`, `missing`, `stale`, and `stats` fields.
 - Keep the implementation public-ready from day one.
-- Make the TypeScript/Node developer experience explicit and copy-pasteable for maintainers who are new to the stack.
+- Make the TypeScript/Node developer experience explicit and copy-pasteable
+  for maintainers who are new to the stack.
 
 ## Stack
 
@@ -23,6 +26,11 @@
 - **Testing**: Vitest
 - **Package manager**: npm
 - **License**: MIT
+
+## Development Contract
+
+- Maintainer and agent development rules live in `docs/development.md`.
+- Behavior changes use TDD and must pass the documented verification gate.
 
 ## Non-goals
 

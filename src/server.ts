@@ -5,6 +5,12 @@ import { ConfigError, loadConfig } from "./config.js";
 import { fetchHomeAssistantStates, HomeAssistantError } from "./homeAssistantClient.js";
 import { normalizeCurrentStats, unavailableStats } from "./normalize.js";
 
+export interface CurrentStatsEnvelopeOptions {
+  capturedAt?: Date;
+  env?: NodeJS.ProcessEnv;
+  envFilePath?: string | null;
+}
+
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "homeassistant-garmin-mcp",
@@ -37,14 +43,17 @@ export async function runServer(): Promise<void> {
   await server.connect(transport);
 }
 
-async function getCurrentStatsEnvelope() {
+export async function getCurrentStatsEnvelope(options: CurrentStatsEnvelopeOptions = {}) {
   try {
-    const config = loadConfig();
+    const config = loadConfig(options.env, options.envFilePath);
     const states = await fetchHomeAssistantStates(config);
-    return normalizeCurrentStats(states, { staleAfterHours: config.staleAfterHours });
+    return normalizeCurrentStats(states, {
+      ...(options.capturedAt ? { capturedAt: options.capturedAt } : {}),
+      staleAfterHours: config.staleAfterHours
+    });
   } catch (error: unknown) {
     if (error instanceof ConfigError || error instanceof HomeAssistantError) {
-      return unavailableStats();
+      return unavailableStats(options.capturedAt);
     }
 
     throw error;

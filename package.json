@@ -4,11 +4,27 @@
   "description": "MCP server exposing Garmin-derived Home Assistant stats.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhchein/homeassistant-garmin-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jhchein/homeassistant-garmin-mcp/issues"
+  },
+  "homepage": "https://github.com/jhchein/homeassistant-garmin-mcp#readme",
+  "keywords": [
+    "garmin",
+    "home-assistant",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "packageManager": "npm@11.12.1",
   "bin": {
     "homeassistant-garmin-mcp": "dist/index.js"
   },
   "files": [
     "dist",
+    "docs/development.md",
     "README.md",
     "LICENSE"
   ],
@@ -19,6 +35,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "prepack": "npm run build"
   },
   "dependencies": {
@@ -26,6 +43,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^4.1.8"

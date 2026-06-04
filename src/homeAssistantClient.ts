@@ -18,22 +18,61 @@ export async function fetchHomeAssistantStates(config: AppConfig): Promise<HomeA
       Accept: "application/json"
     },
     signal: AbortSignal.timeout(config.requestTimeoutMs)
-  }).catch((error: unknown) => {
-    throw new HomeAssistantError(`Home Assistant request failed: ${errorMessage(error)}`);
+  }).catch(() => {
+    throw new HomeAssistantError("Home Assistant request failed.");
   });
 
   if (!response.ok) {
     throw new HomeAssistantError(`Home Assistant returned HTTP ${response.status}.`, response.status);
   }
 
-  const payload = (await response.json()) as unknown;
+  const payload = await readJsonResponse(response);
   if (!Array.isArray(payload)) {
     throw new HomeAssistantError("Home Assistant /api/states response was not an array.");
   }
 
-  return payload as HomeAssistantState[];
+  return payload.flatMap((entry) => {
+    const state = toHomeAssistantState(entry);
+    return state ? [state] : [];
+  });
 }
 
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+async function readJsonResponse(response: Response): Promise<unknown> {
+  try {
+    return (await response.json()) as unknown;
+  } catch {
+    throw new HomeAssistantError("Home Assistant /api/states response was not valid JSON.");
+  }
 }
+
+function toHomeAssistantState(entry: unknown): HomeAssistantState | null {
+  if (!isRecord(entry)) {
+    return null;
+  }
+
+  const entityId = entry["entity_id"];
+  const state = entry["state"];
+  const lastChanged = entry["last_changed"];
+  const lastUpdated = entry["last_updated"];
+
+  if (typeof entityId !== "string" || !entityId.trim()) {
+    return null;
+  }
+
+  if (typeof state !== "string" || typeof lastChanged !== "string" || typeof lastUpdated !== "string") {
+    return null;
+  }
+
+  return {
+    entity_id: entityId,
+    state,
+    attributes: isRecord(entry["attributes"]) ? entry["attributes"] : {},
+    last_changed: lastChanged,
+    last_updated: lastUpdated
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+

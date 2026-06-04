@@ -86,6 +86,20 @@ describe("normalizeCurrentStats", () => {
     expect(result.stale).toContain("stats.sleep.score");
     expect(result.stale).toContain("source.last_synced");
   });
+
+  it("marks source last sync as missing and preserves factual boolean values", () => {
+    const states = ENTITY_DEFINITIONS.filter((definition) => definition.required !== false).map((definition, index) =>
+      state(definition.entityId, index === 0 ? "true" : String(index + 1), currentUpdatedAt)
+    );
+
+    const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
+
+    expect(result.status).toBe("partial");
+    expect(result.missing).toContain("source.last_synced");
+    expect(result.source.last_synced).toBeNull();
+    expect(result.stats.body_battery["current"]?.value).toBe(true);
+    expect(result.stats.body_battery["current"]?.unit).toBeNull();
+  });
 });
 
 function state(entityId: string, value: string, updatedAt: string, unit?: string): HomeAssistantState {

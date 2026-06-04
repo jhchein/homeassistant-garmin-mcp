@@ -77,6 +77,38 @@ HA_TOKEN=file-pointer-token
       cleanup();
     }
   });
+
+  it("rejects missing required Home Assistant settings", () => {
+    expect(() => loadConfig({}, null)).toThrow("Missing required configuration HA_URL.");
+    expect(() => loadConfig({ HA_URL: "https://ha.example.com" }, null)).toThrow(
+      "Missing required configuration HA_TOKEN."
+    );
+  });
+
+  it("ignores malformed env file lines and falls back for invalid optional numbers", () => {
+    const { envFilePath, cleanup } = createEnvFile(`
+# comment
+export HA_URL='https://ha.example.com/'
+HA_TOKEN=token
+MALFORMED_LINE
+=ignored
+HA_REQUEST_TIMEOUT_MS=0
+HA_STALE_AFTER_HOURS=not-a-number
+`);
+
+    try {
+      const config = loadConfig({}, envFilePath);
+
+      expect(config).toEqual({
+        haUrl: "https://ha.example.com",
+        haToken: "token",
+        requestTimeoutMs: 10_000,
+        staleAfterHours: 24
+      });
+    } finally {
+      cleanup();
+    }
+  });
 });
 
 function createEnvFile(contents: string): { envFilePath: string; cleanup: () => void } {

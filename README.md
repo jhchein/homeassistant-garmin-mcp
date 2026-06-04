@@ -107,7 +107,26 @@ npm test
 
 ## MCP Client Configuration
 
-For a local checkout after `npm run build`:
+For a local checkout after `npm run build`, point the MCP config at the
+ignored local `.env` file:
+
+```json
+{
+  "servers": {
+    "homeassistant-garmin": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/homeassistant-garmin-mcp/dist/index.js"],
+      "env": {
+        "HA_ENV_FILE": "/absolute/path/to/homeassistant-garmin-mcp/.env"
+      }
+    }
+  }
+}
+```
+
+If your MCP client has its own secret handling, pass direct environment
+variables instead of an env-file pointer:
 
 ```json
 {
@@ -200,6 +219,7 @@ envelope partial.
 
 Project context lives in `project-spec/`.
 
+- `docs/development.md` — development contract, TDD rules, and verification
 - `project-spec/project.md` — goals, stack, and non-goals
 - `project-spec/interfaces.md` — tool and auth contracts
 - `project-spec/constraints.md` — security, privacy, and networking rules
