@@ -26,9 +26,15 @@ That Adapter must handle HTTP, timeout behavior, JSON parsing, top-level payload
 validation, per-entry validation, and sanitized Home Assistant errors. Callers
 should receive only usable Home Assistant state entries.
 
+The Current Stats Workflow Module owns loading configuration, reading Home
+Assistant state, normalizing Current Stats, and returning an unavailable Stats
+Envelope for expected configuration or Home Assistant failures. It keeps the
+sanitized error available for diagnostic callers such as smoke checks.
+
 The normalizer owns current-stats classification: `missing`, `stale`, optional
 expansion fields, and top-level `status`. The MCP tool layer owns tool
-registration and response formatting.
+registration and response formatting. The Smoke Test Module owns stdout,
+stderr, exit code, and local diagnostic wording.
 
 ## Home Assistant State Handling
 

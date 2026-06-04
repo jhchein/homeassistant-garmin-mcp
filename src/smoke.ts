@@ -1,6 +1,6 @@
-import { ConfigError, loadConfig } from "./config.js";
-import { fetchHomeAssistantStates, HomeAssistantError } from "./homeAssistantClient.js";
-import { normalizeCurrentStats } from "./normalize.js";
+import { ConfigError } from "./config.js";
+import { readCurrentStats } from "./currentStats.js";
+import { HomeAssistantError } from "./homeAssistantClient.js";
 
 export interface SmokeCheckOptions {
   capturedAt?: Date;
@@ -15,26 +15,21 @@ export interface SmokeCheckResult {
 }
 
 export async function runSmokeCheck(options: SmokeCheckOptions = {}): Promise<SmokeCheckResult> {
-  try {
-    const config = loadConfig(options.env, options.envFilePath);
-    const states = await fetchHomeAssistantStates(config);
-    const envelope = normalizeCurrentStats(states, {
-      ...(options.capturedAt ? { capturedAt: options.capturedAt } : {}),
-      staleAfterHours: config.staleAfterHours,
-    });
+  const result = await readCurrentStats(options);
 
+  if (result.ok) {
     return {
       exitCode: 0,
-      stdout: JSON.stringify(envelope, null, 2),
+      stdout: JSON.stringify(result.envelope, null, 2),
       stderr: "",
     };
-  } catch (error: unknown) {
-    return {
-      exitCode: 1,
-      stdout: "",
-      stderr: smokeErrorMessage(error),
-    };
   }
+
+  return {
+    exitCode: 1,
+    stdout: "",
+    stderr: smokeErrorMessage(result.error),
+  };
 }
 
 export function smokeErrorMessage(error: unknown): string {

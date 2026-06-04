@@ -1,15 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import { ConfigError, loadConfig } from "./config.js";
-import { fetchHomeAssistantStates, HomeAssistantError } from "./homeAssistantClient.js";
-import { normalizeCurrentStats, unavailableStats } from "./normalize.js";
+import { getCurrentStatsEnvelope } from "./currentStats.js";
 
-export interface CurrentStatsEnvelopeOptions {
-  capturedAt?: Date;
-  env?: NodeJS.ProcessEnv;
-  envFilePath?: string | null;
-}
+export { getCurrentStatsEnvelope } from "./currentStats.js";
 
 export function createServer(): McpServer {
   const server = new McpServer({
@@ -36,21 +30,4 @@ export async function runServer(): Promise<void> {
   const server = createServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
-}
-
-export async function getCurrentStatsEnvelope(options: CurrentStatsEnvelopeOptions = {}) {
-  try {
-    const config = loadConfig(options.env, options.envFilePath);
-    const states = await fetchHomeAssistantStates(config);
-    return normalizeCurrentStats(states, {
-      ...(options.capturedAt ? { capturedAt: options.capturedAt } : {}),
-      staleAfterHours: config.staleAfterHours,
-    });
-  } catch (error: unknown) {
-    if (error instanceof ConfigError || error instanceof HomeAssistantError) {
-      return unavailableStats(options.capturedAt);
-    }
-
-    throw error;
-  }
 }
