@@ -12,10 +12,10 @@ export default defineConfig({
         branches: 85,
         functions: 90,
         lines: 90,
-        statements: 90
-      }
+        statements: 90,
+      },
     },
     environment: "node",
-    include: ["tests/**/*.test.ts"]
-  }
+    include: ["tests/**/*.test.ts"],
+  },
 });

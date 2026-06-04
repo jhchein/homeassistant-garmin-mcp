@@ -13,16 +13,16 @@ describe("loadConfig", () => {
         HA_URL: "https://ha.example.com/",
         HA_TOKEN: "token",
         HA_REQUEST_TIMEOUT_MS: "2000",
-        HA_STALE_AFTER_HOURS: "12"
+        HA_STALE_AFTER_HOURS: "12",
       },
-      null
+      null,
     );
 
     expect(config).toEqual({
       haUrl: "https://ha.example.com",
       haToken: "token",
       requestTimeoutMs: 2000,
-      staleAfterHours: 12
+      staleAfterHours: 12,
     });
   });
 
@@ -81,7 +81,7 @@ HA_TOKEN=file-pointer-token
   it("rejects missing required Home Assistant settings", () => {
     expect(() => loadConfig({}, null)).toThrow("Missing required configuration HA_URL.");
     expect(() => loadConfig({ HA_URL: "https://ha.example.com" }, null)).toThrow(
-      "Missing required configuration HA_TOKEN."
+      "Missing required configuration HA_TOKEN.",
     );
   });
 
@@ -103,7 +103,7 @@ HA_STALE_AFTER_HOURS=not-a-number
         haUrl: "https://ha.example.com",
         haToken: "token",
         requestTimeoutMs: 10_000,
-        staleAfterHours: 24
+        staleAfterHours: 24,
       });
     } finally {
       cleanup();
@@ -118,6 +118,6 @@ function createEnvFile(contents: string): { envFilePath: string; cleanup: () => 
 
   return {
     envFilePath,
-    cleanup: () => rmSync(directory, { force: true, recursive: true })
+    cleanup: () => rmSync(directory, { force: true, recursive: true }),
   };
 }

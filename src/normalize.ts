@@ -5,7 +5,7 @@ const UNKNOWN_STATES = new Set(["", "unknown", "unavailable", "none", "null"]);
 
 export function normalizeCurrentStats(
   states: HomeAssistantState[],
-  options: { capturedAt?: Date; staleAfterHours?: number } = {}
+  options: { capturedAt?: Date; staleAfterHours?: number } = {},
 ): CurrentStatsEnvelope {
   const capturedAt = options.capturedAt ?? new Date();
   const staleAfterHours = options.staleAfterHours ?? 24;
@@ -50,11 +50,11 @@ export function normalizeCurrentStats(
     source: {
       system: "home_assistant",
       integration: "garmin_connect",
-      last_synced: lastSynced
+      last_synced: lastSynced,
     },
     missing,
     stale,
-    stats
+    stats,
   };
 }
 
@@ -65,11 +65,11 @@ export function unavailableStats(capturedAt: Date = new Date()): CurrentStatsEnv
     source: {
       system: "home_assistant",
       integration: "garmin_connect",
-      last_synced: null
+      last_synced: null,
     },
     missing: ["home_assistant"],
     stale: [],
-    stats: createEmptyStats()
+    stats: createEmptyStats(),
   };
 }
 
@@ -84,7 +84,7 @@ export function createEmptyStats(): CurrentStats {
     activity: {},
     fitness: {},
     body_composition: {},
-    time_series: {}
+    time_series: {},
   };
 }
 
@@ -94,7 +94,7 @@ function toStatValue(state: HomeAssistantState): StatValue {
     unit: unitOfMeasurement(state),
     entity_id: state.entity_id,
     last_changed: state.last_changed || null,
-    last_updated: state.last_updated || null
+    last_updated: state.last_updated || null,
   };
 }
 

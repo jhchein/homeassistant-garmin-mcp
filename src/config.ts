@@ -32,7 +32,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, envFilePath: st
     haUrl,
     haToken,
     requestTimeoutMs: parsePositiveInt(readConfigValue("HA_REQUEST_TIMEOUT_MS", env, fileEnv), 10_000),
-    staleAfterHours: parsePositiveInt(readConfigValue("HA_STALE_AFTER_HOURS", env, fileEnv), 24)
+    staleAfterHours: parsePositiveInt(readConfigValue("HA_STALE_AFTER_HOURS", env, fileEnv), 24),
   };
 }
 

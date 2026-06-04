@@ -7,7 +7,7 @@ const config: AppConfig = {
   haUrl: "https://ha.example.com",
   haToken: "secret-token",
   requestTimeoutMs: 1000,
-  staleAfterHours: 24
+  staleAfterHours: 24,
 };
 
 describe("fetchHomeAssistantStates", () => {
@@ -25,15 +25,15 @@ describe("fetchHomeAssistantStates", () => {
         entity_id: "sensor.resting_heart_rate",
         state: "55",
         attributes: {},
-        last_changed: "2026-06-03T11:55:00.000Z"
+        last_changed: "2026-06-03T11:55:00.000Z",
       },
       {
         entity_id: "sensor.avg_stress_level",
         state: "20",
         attributes: "not-an-object",
         last_changed: "2026-06-03T11:55:00.000Z",
-        last_updated: "2026-06-03T11:55:00.000Z"
-      }
+        last_updated: "2026-06-03T11:55:00.000Z",
+      },
     ]);
 
     const result = await fetchHomeAssistantStates(config);
@@ -45,8 +45,8 @@ describe("fetchHomeAssistantStates", () => {
         state: "20",
         attributes: {},
         last_changed: "2026-06-03T11:55:00.000Z",
-        last_updated: "2026-06-03T11:55:00.000Z"
-      }
+        last_updated: "2026-06-03T11:55:00.000Z",
+      },
     ]);
   });
 
@@ -81,7 +81,7 @@ describe("fetchHomeAssistantStates", () => {
       "fetch",
       vi.fn(async () => {
         throw new Error("secret-token https://ha.example.com connection failed");
-      })
+      }),
     );
 
     try {
@@ -102,7 +102,7 @@ function stubStatesResponse(payload: unknown): void {
 function stubResponse(response: Response): void {
   vi.stubGlobal(
     "fetch",
-    vi.fn(async () => response)
+    vi.fn(async () => response),
   );
 }
 
@@ -112,6 +112,6 @@ function state(entityId: string, value: string) {
     state: value,
     attributes: { unit_of_measurement: "units" },
     last_changed: "2026-06-03T11:55:00.000Z",
-    last_updated: "2026-06-03T11:55:00.000Z"
+    last_updated: "2026-06-03T11:55:00.000Z",
   };
 }

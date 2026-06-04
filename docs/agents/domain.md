@@ -10,7 +10,7 @@
 
 - Location: `project-spec/decisions/YYYY-MM-DD/slug.md`
 - Index: `project-spec/decisions/README.md`
-- Three-gate rule — only create an ADR when all three are true:
+- Three-gate rule: only create an ADR when all three are true:
   1. Hard to reverse
   2. Surprising without context
   3. The result of a real trade-off with genuine alternatives
@@ -20,4 +20,5 @@
 
 1. Read `CONTEXT.md`.
 2. Scan `project-spec/decisions/` for ADRs touching the area.
-3. If a proposal contradicts an existing ADR, surface it explicitly rather than silently overriding it.
+3. If a proposal contradicts an existing ADR, surface it explicitly rather
+  than silently overriding it.

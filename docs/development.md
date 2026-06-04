@@ -77,10 +77,14 @@ Run these checks before treating a behavior change as done:
 
 ```bash
 npm run typecheck
+npm run lint
+npm run format:check
 npm test
 npm run test:coverage
 npm run build
 npm audit --audit-level=moderate
 ```
+
+Use `npm run lint:fix` for safe local auto-fixes before rerunning the checks.
 
 Use `npm run smoke` only when validating local Home Assistant connectivity.

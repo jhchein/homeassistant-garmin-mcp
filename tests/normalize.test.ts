@@ -12,9 +12,9 @@ describe("normalizeCurrentStats", () => {
   it("returns full status when all mapped entities are present and current", () => {
     const states = [
       ...ENTITY_DEFINITIONS.map((definition, index) =>
-        state(definition.entityId, String(index + 1), currentUpdatedAt, "units")
+        state(definition.entityId, String(index + 1), currentUpdatedAt, "units"),
       ),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt)
+      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt),
     ];
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -30,7 +30,7 @@ describe("normalizeCurrentStats", () => {
   it("returns partial status and missing paths for unavailable entities", () => {
     const states = [
       state("sensor.sleep_score", "unavailable", currentUpdatedAt),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt)
+      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt),
     ];
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -44,9 +44,9 @@ describe("normalizeCurrentStats", () => {
   it("does not mark optional expansion entities as missing when absent", () => {
     const states = [
       ...ENTITY_DEFINITIONS.filter((definition) => definition.required !== false).map((definition, index) =>
-        state(definition.entityId, String(index + 1), currentUpdatedAt, "units")
+        state(definition.entityId, String(index + 1), currentUpdatedAt, "units"),
       ),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt)
+      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt),
     ];
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -60,10 +60,10 @@ describe("normalizeCurrentStats", () => {
   it("does not mark optional expansion entities as stale when required entities are current", () => {
     const states = [
       ...ENTITY_DEFINITIONS.filter((definition) => definition.required !== false).map((definition, index) =>
-        state(definition.entityId, String(index + 1), currentUpdatedAt, "units")
+        state(definition.entityId, String(index + 1), currentUpdatedAt, "units"),
       ),
       state("sensor.garmin_connect_vo2_max", "48", staleUpdatedAt, "ml/kg/min"),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt)
+      state(LAST_SYNC_ENTITY_ID, "2026-06-03T11:58:00.000Z", currentUpdatedAt),
     ];
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -76,7 +76,7 @@ describe("normalizeCurrentStats", () => {
   it("returns stale status when present entities are older than the freshness threshold", () => {
     const states = [
       ...ENTITY_DEFINITIONS.map((definition) => state(definition.entityId, "42", staleUpdatedAt)),
-      state(LAST_SYNC_ENTITY_ID, "2026-06-01T11:58:00.000Z", staleUpdatedAt)
+      state(LAST_SYNC_ENTITY_ID, "2026-06-01T11:58:00.000Z", staleUpdatedAt),
     ];
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -89,7 +89,7 @@ describe("normalizeCurrentStats", () => {
 
   it("marks source last sync as missing and preserves factual boolean values", () => {
     const states = ENTITY_DEFINITIONS.filter((definition) => definition.required !== false).map((definition, index) =>
-      state(definition.entityId, index === 0 ? "true" : String(index + 1), currentUpdatedAt)
+      state(definition.entityId, index === 0 ? "true" : String(index + 1), currentUpdatedAt),
     );
 
     const result = normalizeCurrentStats(states, { capturedAt, staleAfterHours: 24 });
@@ -108,6 +108,6 @@ function state(entityId: string, value: string, updatedAt: string, unit?: string
     state: value,
     attributes: unit ? { unit_of_measurement: unit } : {},
     last_changed: updatedAt,
-    last_updated: updatedAt
+    last_updated: updatedAt,
   };
 }
