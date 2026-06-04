@@ -146,7 +146,7 @@ variables instead of an env-file pointer:
 }
 ```
 
-Once the package is published to npm, the same server can be run via `npx`:
+The published package can be run via `npx`:
 
 ```json
 {
