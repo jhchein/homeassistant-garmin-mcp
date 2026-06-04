@@ -41,14 +41,14 @@ variables first, then falls back to `HA_ENV_FILE` when set, and then to a local
 `.env` file in the current working directory. MCP clients can point `HA_ENV_FILE`
 at a secret file without embedding `HA_URL` or `HA_TOKEN` in their config.
 
-## Run Locally
+## Run locally
 
 ```bash
 npm run build
 npm start
 ```
 
-For a local smoke test using `.env`:
+Run a local smoke test with `.env`:
 
 ```powershell
 Remove-Item Env:HA_URL -ErrorAction SilentlyContinue
@@ -56,11 +56,11 @@ Remove-Item Env:HA_TOKEN -ErrorAction SilentlyContinue
 npm run smoke
 ```
 
-The `Remove-Item` lines are only needed when the current PowerShell session has
-old values set. Explicit shell variables override `.env`.
+The `Remove-Item` lines only matter when the current PowerShell session already
+has old values set. Explicit shell variables override `.env`.
 
-For a local PowerShell smoke test without writing secrets to a file, override
-the `.env` values in the current shell:
+To test without writing secrets to a file, set the values in the current
+PowerShell session:
 
 ```powershell
 $env:HA_URL="https://home-assistant.example.com"
@@ -78,13 +78,13 @@ For an MCP client launched from another workspace, pass an env-file pointer:
 }
 ```
 
-This prints the same normalized envelope that the MCP tool returns.
+The smoke command prints the same normalized envelope that the MCP tool returns.
 
 If the smoke test reports `HTTP 401` or `HTTP 403`, Home Assistant is reachable
 but the token was rejected. Create a fresh Home Assistant long-lived access
 token, set `HA_TOKEN` again in the same shell, and rerun `npm run smoke`.
 
-To start the stdio MCP server directly:
+Start the stdio MCP server directly:
 
 ```powershell
 npm start
@@ -98,7 +98,7 @@ For development:
 npm run dev
 ```
 
-## Typecheck And Test
+## Typecheck and test
 
 ```bash
 npm run typecheck
@@ -107,10 +107,10 @@ npm run format:check
 npm test
 ```
 
-## MCP Client Configuration
+## MCP client configuration
 
-For a local checkout after `npm run build`, point the MCP config at the
-ignored local `.env` file:
+This package is not published to npm yet. For now, use a local checkout. After
+running `npm run build`, point the MCP config at the ignored local `.env` file:
 
 ```json
 {
@@ -146,7 +146,7 @@ variables instead of an env-file pointer:
 }
 ```
 
-After publishing, the same server can be run via `npx`:
+Once the package is published to npm, the same server can be run via `npx`:
 
 ```json
 {
@@ -217,7 +217,7 @@ envelope partial.
 - Unknown or unavailable Home Assistant states are reported through `missing` or
   `stale` rather than passed through as useful stats.
 
-## Development Notes
+## Development notes
 
 Project context lives in `project-spec/`.
 
