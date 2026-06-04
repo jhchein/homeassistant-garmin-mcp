@@ -19,6 +19,13 @@ The current best available Garmin-derived facts returned by the MCP tool,
 including overnight and day-so-far data when Home Assistant exposes it.
 _Avoid_: snapshot, wellbeing score, health report
 
+**Current Stats Workflow**:
+The module behavior that loads Home Assistant configuration, reads Home
+Assistant state, and produces a **Stats Envelope** for callers. Expected Home
+Assistant or configuration failures become an unavailable **Stats Envelope**
+while the sanitized error remains available to diagnostic callers.
+_Avoid_: MCP tool formatting, smoke script behavior
+
 **Stats Envelope**:
 The stable top-level MCP response shape containing `status`, `captured_at`,
 `source`, `missing`, `stale`, and `stats`.
@@ -47,6 +54,8 @@ _Avoid_: MCP server logic, coach inside the server
 
 - **Home Assistant** exposes entities through the **Garmin Connect Integration**.
 - `homeassistant-garmin-mcp` reads **Home Assistant** and returns **Current Stats**.
+- The **Current Stats Workflow** produces the **Stats Envelope** from
+  **Home Assistant** state.
 - **Current Stats** are wrapped in the **Stats Envelope**.
 - The **Consumer Agent** interprets **Current Stats**; the MCP server does not.
 - A required **Missing Field** or **Stale Field** may affect the **Stats Envelope**
