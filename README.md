@@ -1,5 +1,9 @@
 # homeassistant-garmin-mcp
 
+[![CI](https://github.com/jhchein/homeassistant-garmin-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/jhchein/homeassistant-garmin-mcp/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@jhchein/homeassistant-garmin-mcp)](https://www.npmjs.com/package/@jhchein/homeassistant-garmin-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Minimal MCP server that exposes Garmin-derived stats from Home Assistant.
 
 The v1 server provides one read-only tool, `get_current_stats`, that returns
@@ -13,140 +17,13 @@ data, interpret readiness, or make recommendations.
 - Home Assistant with Garmin Connect entities available
 - Home Assistant long-lived access token
 
-## Install
+## Quick start
 
-```bash
-npm install
-```
-
-## Configure
-
-Use `.env.example` as a template for local development:
-
-```bash
-cp .env.example .env
-```
-
-Set:
-
-```env
-HA_URL=https://home-assistant.example.com
-HA_TOKEN=replace-with-home-assistant-token
-HA_REQUEST_TIMEOUT_MS=10000
-HA_STALE_AFTER_HOURS=24
-```
-
-Never commit `.env` or real tokens. The server reads explicit environment
-variables first, then falls back to `HA_ENV_FILE` when set, and then to a local
-`.env` file in the current working directory. MCP clients can point `HA_ENV_FILE`
-at a secret file without embedding `HA_URL` or `HA_TOKEN` in their config.
-
-## Run locally
-
-```bash
-npm run build
-npm start
-```
-
-Run a local smoke test with `.env`:
-
-```powershell
-Remove-Item Env:HA_URL -ErrorAction SilentlyContinue
-Remove-Item Env:HA_TOKEN -ErrorAction SilentlyContinue
-npm run smoke
-```
-
-The `Remove-Item` lines only matter when the current PowerShell session already
-has old values set. Explicit shell variables override `.env`.
-
-To test without writing secrets to a file, set the values in the current
-PowerShell session:
-
-```powershell
-$env:HA_URL="https://home-assistant.example.com"
-$env:HA_TOKEN="paste-token-here"
-npm run smoke
-```
-
-For an MCP client launched from another workspace, pass an env-file pointer:
-
-```json
-{
-  "env": {
-    "HA_ENV_FILE": "C:/code/mcp/homeassistant-garmin-mcp/.env"
-  }
-}
-```
-
-The smoke command prints the same normalized envelope that the MCP tool returns.
-
-If the smoke test reports `HTTP 401` or `HTTP 403`, Home Assistant is reachable
-but the token was rejected. Create a fresh Home Assistant long-lived access
-token, set `HA_TOKEN` again in the same shell, and rerun `npm run smoke`.
-
-Start the stdio MCP server directly:
-
-```powershell
-npm start
-```
-
-Stop the server with `Ctrl+C` after the MCP client test is complete.
-
-For development:
-
-```bash
-npm run dev
-```
-
-## Typecheck and test
-
-```bash
-npm run typecheck
-npm run lint
-npm run format:check
-npm test
-```
-
-## MCP client configuration
-
-This package is not published to npm yet. For now, use a local checkout. After
-running `npm run build`, point the MCP config at the ignored local `.env` file:
-
-```json
-{
-  "servers": {
-    "homeassistant-garmin": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/homeassistant-garmin-mcp/dist/index.js"],
-      "env": {
-        "HA_ENV_FILE": "/absolute/path/to/homeassistant-garmin-mcp/.env"
-      }
-    }
-  }
-}
-```
-
-If your MCP client has its own secret handling, pass direct environment
-variables instead of an env-file pointer:
-
-```json
-{
-  "servers": {
-    "homeassistant-garmin": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/homeassistant-garmin-mcp/dist/index.js"],
-      "env": {
-        "HA_URL": "https://home-assistant.example.com",
-        "HA_TOKEN": "replace-with-home-assistant-token"
-      }
-    }
-  }
-}
-```
-
-The published package can be run via `npx`:
+The server is published on npm as
+[`@jhchein/homeassistant-garmin-mcp`](https://www.npmjs.com/package/@jhchein/homeassistant-garmin-mcp).
+Most MCP clients can launch it with `npx`, so you do not need a local checkout.
+Add a stdio server entry and pass your Home Assistant URL and a long-lived access
+token:
 
 ```json
 {
@@ -162,6 +39,86 @@ The published package can be run via `npx`:
     }
   }
 }
+```
+
+To keep secrets out of the client config, point `HA_ENV_FILE` at a separate env
+file instead of setting `HA_URL` and `HA_TOKEN` inline:
+
+```json
+{
+  "servers": {
+    "homeassistant-garmin": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@jhchein/homeassistant-garmin-mcp"],
+      "env": {
+        "HA_ENV_FILE": "/absolute/path/to/homeassistant-garmin-mcp/.env"
+      }
+    }
+  }
+}
+```
+
+## Configuration
+
+The server reads its config from environment variables:
+
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `HA_URL` | yes | none | Base URL of your Home Assistant instance |
+| `HA_TOKEN` | yes | none | Home Assistant long-lived access token |
+| `HA_REQUEST_TIMEOUT_MS` | no | `10000` | Request timeout in milliseconds |
+| `HA_STALE_AFTER_HOURS` | no | `24` | Age after which a reading is stale |
+
+Values resolve in a fixed order: an explicit environment variable wins, then a
+file named by `HA_ENV_FILE`, then a local `.env` file in the working directory.
+Never commit `.env` or a real token.
+
+## Local development
+
+Clone the repository and install dependencies:
+
+```bash
+npm install
+```
+
+Copy the example env file and fill in your Home Assistant details:
+
+```bash
+cp .env.example .env
+```
+
+Build the server and start it over stdio:
+
+```bash
+npm run build
+npm start
+```
+
+Stop the server with `Ctrl+C` once your MCP client test is done. To rebuild on
+every edit, run `npm run dev` instead.
+
+The smoke script runs the same code path as the `get_current_stats` tool and
+prints the normalized envelope, which makes it the fastest way to check Home
+Assistant connectivity:
+
+```bash
+npm run smoke
+```
+
+By default the smoke script reads `HA_URL` and `HA_TOKEN` from `.env`. An explicit
+shell variable always wins over the file, so clear any leftover `HA_URL` or
+`HA_TOKEN` from your session when you mean to use `.env`. A reported `HTTP 401`
+or `HTTP 403` means Home Assistant is reachable but rejected the token: create a
+fresh long-lived access token and run the script again.
+
+Run the full check suite before committing:
+
+```bash
+npm run typecheck
+npm run lint
+npm run format:check
+npm test
 ```
 
 ## Tool
@@ -221,9 +178,34 @@ envelope partial.
 
 Project context lives in `project-spec/`.
 
-- `docs/development.md` — development contract, TDD rules, and verification
-- `project-spec/project.md` — goals, stack, and non-goals
-- `project-spec/interfaces.md` — tool and auth contracts
-- `project-spec/constraints.md` — security, privacy, and networking rules
-- `project-spec/decisions/` — architecture decisions
-- `CONTEXT.md` — domain vocabulary
+- `docs/development.md`: development contract, TDD rules, and verification
+- `project-spec/project.md`: goals, stack, and non-goals
+- `project-spec/interfaces.md`: tool and auth contracts
+- `project-spec/constraints.md`: security, privacy, and networking rules
+- `project-spec/decisions/`: architecture decisions
+- `CONTEXT.md`: domain vocabulary
+
+## Collaboration
+
+Bug reports and feature ideas go to
+[GitHub Issues](https://github.com/jhchein/homeassistant-garmin-mcp/issues). New
+issues from agents get the `needs-triage` label; see
+[docs/agents/triage-labels.md](docs/agents/triage-labels.md) for the label set.
+
+Before opening a pull request, run the full check suite and keep changes inside
+the v1 boundaries above (read-only, on-demand, no analytics):
+
+```bash
+npm run typecheck
+npm run lint
+npm run format:check
+npm test
+```
+
+The development contract in
+[docs/development.md](docs/development.md) covers the TDD rules and verification
+steps in more detail.
+
+## License
+
+[MIT](LICENSE) © 2026 Hendrik Hein
