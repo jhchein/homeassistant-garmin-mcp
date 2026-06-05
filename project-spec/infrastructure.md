@@ -21,7 +21,8 @@ Commit `.env.example`; never commit `.env`.
 
 - Build output goes to `dist/`.
 - Package exposes a binary named `homeassistant-garmin-mcp`.
-- Published package should be runnable with `npx -y homeassistant-garmin-mcp`.
+- Published to npm as `@jhchein/homeassistant-garmin-mcp` and runnable with
+  `npx -y @jhchein/homeassistant-garmin-mcp`.
 
 ## CI
 
