@@ -164,6 +164,63 @@ Expansion stats such as fitness, activity, and body composition are included
 when Home Assistant exposes them, but absent expansion fields do not make the
 envelope partial.
 
+### `get_recent_stats`
+
+Input:
+
+```json
+{
+  "days": 7
+}
+```
+
+`days` is optional, defaults to `7`, and must be an integer from `1` to `28`.
+Invalid values are rejected by the MCP input schema as a structured error
+before the tool runs.
+
+Output envelope:
+
+```json
+{
+  "status": "full",
+  "captured_at": "2026-06-29T10:00:00.000Z",
+  "source": {
+    "system": "home_assistant",
+    "integration": "garmin_connect",
+    "history_source": "home_assistant_recorder",
+    "time_zone": "Europe/Berlin",
+    "range_start": "2026-06-23T22:00:00.000Z",
+    "range_end": "2026-06-29T10:00:00.000Z"
+  },
+  "missing": [],
+  "stale": [],
+  "stats_by_day": [
+    {
+      "date": "2026-06-29",
+      "recovery": {
+        "training_readiness": {},
+        "morning_training_readiness": {},
+        "watch_training_readiness": {}
+      }
+    }
+  ]
+}
+```
+
+The `stats_by_day` array is the primary payload. Each day contains factual
+values only: no interpretations, caveats, or recommendations. `watch_training_readiness`
+is a convenience alias for the raw `morning_training_readiness` value and is
+not a separate Home Assistant sensor. `training_readiness` and
+`morning_training_readiness` are both preserved when Home Assistant exposes
+them.
+
+The tool uses the Home Assistant history/recorder backend. If `/api/config`
+returns a missing, blank, or unusable timezone, the server falls back to UTC for
+range selection and date grouping.
+
+Recent stats become partial or unavailable when history data is missing, stale,
+or inaccessible.
+
 ## Boundaries
 
 - Home Assistant is the only upstream integration boundary.

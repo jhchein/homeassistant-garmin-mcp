@@ -9,3 +9,4 @@ the three-gate rule.
 ## Index
 
 - [2026-06-03 — v1 MCP contract](2026-06-03/v1-mcp-contract.md)
+- [2026-06-29 — recent stats history tool](2026-06-29/recent-stats-history-tool.md)

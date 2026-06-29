@@ -6,6 +6,15 @@ export interface SourceInfo {
   last_synced: string | null;
 }
 
+export interface RecentStatsSourceInfo {
+  system: "home_assistant";
+  integration: "garmin_connect";
+  history_source: "home_assistant_recorder";
+  time_zone: string;
+  range_start: string;
+  range_end: string;
+}
+
 export interface StatValue {
   value: string | number | boolean;
   unit: string | null;
@@ -14,7 +23,11 @@ export interface StatValue {
   last_updated: string | null;
 }
 
-export type StatsSection = Record<string, StatValue>;
+export interface AliasedStatValue extends StatValue {
+  source_field: string;
+}
+
+export type StatsSection = Record<string, StatValue | AliasedStatValue>;
 
 export interface CurrentStats {
   sleep: StatsSection;
@@ -38,6 +51,23 @@ export interface CurrentStatsEnvelope {
   missing: string[];
   stale: string[];
   stats: CurrentStats;
+}
+
+export interface RecentStatsDay extends Omit<CurrentStats, "time_series"> {
+  date: string;
+}
+
+export interface RecentStatsEnvelope {
+  status: StatsStatus;
+  captured_at: string;
+  source: RecentStatsSourceInfo;
+  missing: string[];
+  stale: string[];
+  stats_by_day: RecentStatsDay[];
+}
+
+export interface HomeAssistantConfig {
+  time_zone: string;
 }
 
 export interface HomeAssistantState {

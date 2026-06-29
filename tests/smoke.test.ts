@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ENTITY_DEFINITIONS, LAST_SYNC_ENTITY_ID } from "../src/entityMap.js";
-import { runSmokeCheck } from "../src/smoke.js";
+import { HomeAssistantError } from "../src/homeAssistantClient.js";
+import { runSmokeCheck, smokeErrorMessage } from "../src/smoke.js";
 
 const capturedAt = new Date("2026-06-03T12:00:00.000Z");
 const currentUpdatedAt = "2026-06-03T11:55:00.000Z";
@@ -100,6 +101,19 @@ describe("runSmokeCheck", () => {
       stdout: "",
       stderr: "Smoke test Home Assistant error: Home Assistant request failed.",
     });
+  });
+
+  it("formats Home Assistant auth failures", () => {
+    expect(smokeErrorMessage(new HomeAssistantError("Home Assistant returned HTTP 403.", 403))).toBe(
+      [
+        "Smoke test authentication failed: Home Assistant rejected HA_TOKEN (HTTP 403).",
+        "Create a fresh Home Assistant long-lived access token, set HA_TOKEN again, and rerun npm run smoke.",
+      ].join("\n"),
+    );
+  });
+
+  it("falls back to the generic error message", () => {
+    expect(smokeErrorMessage(new Error("boom"))).toBe("Smoke test failed: boom");
   });
 });
 

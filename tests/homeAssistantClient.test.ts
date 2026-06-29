@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { fetchHomeAssistantStates, HomeAssistantError } from "../src/homeAssistantClient.js";
+import {
+  fetchHomeAssistantConfig,
+  fetchHomeAssistantHistory,
+  fetchHomeAssistantStates,
+  HomeAssistantError,
+} from "../src/homeAssistantClient.js";
 import type { AppConfig } from "../src/config.js";
 
 const config: AppConfig = {
@@ -92,6 +97,103 @@ describe("fetchHomeAssistantStates", () => {
       expect(error).not.toHaveProperty("message", expect.stringContaining("secret-token"));
       expect(error).not.toHaveProperty("message", expect.stringContaining("ha.example.com"));
     }
+  });
+});
+
+describe("fetchHomeAssistantConfig", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("rejects invalid JSON responses without exposing response details", async () => {
+    stubResponse(new Response("not-json secret-token https://ha.example.com", { status: 200 }));
+
+    try {
+      await fetchHomeAssistantConfig(config);
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(HomeAssistantError);
+      expect(error).toHaveProperty("message", "Home Assistant /api/config response was not valid JSON.");
+      expect(error).not.toHaveProperty("message", expect.stringContaining("secret-token"));
+      expect(error).not.toHaveProperty("message", expect.stringContaining("ha.example.com"));
+    }
+  });
+
+  it("falls back to UTC when config payloads lack a usable time_zone", async () => {
+    stubStatesResponse(["unexpected"]);
+
+    const result = await fetchHomeAssistantConfig(config);
+
+    expect(result).toEqual({ time_zone: "UTC" });
+  });
+});
+
+describe("fetchHomeAssistantHistory", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("rejects invalid JSON responses without exposing response details", async () => {
+    stubResponse(new Response("not-json secret-token https://ha.example.com", { status: 200 }));
+
+    try {
+      await fetchHomeAssistantHistory(config, {
+        start: new Date("2026-06-28T00:00:00.000Z"),
+        end: new Date("2026-06-29T00:00:00.000Z"),
+        entityIds: ["sensor.sleep_score"],
+      });
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(HomeAssistantError);
+      expect(error).toHaveProperty("message", "Home Assistant /api/history/period response was not valid JSON.");
+      expect(error).not.toHaveProperty("message", expect.stringContaining("secret-token"));
+      expect(error).not.toHaveProperty("message", expect.stringContaining("ha.example.com"));
+    }
+  });
+
+  it("rejects non-array history payloads", async () => {
+    stubResponse(new Response(JSON.stringify({ error: "unexpected" }), { status: 200 }));
+
+    try {
+      await fetchHomeAssistantHistory(config, {
+        start: new Date("2026-06-28T00:00:00.000Z"),
+        end: new Date("2026-06-29T00:00:00.000Z"),
+        entityIds: ["sensor.sleep_score"],
+      });
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(HomeAssistantError);
+      expect(error).toHaveProperty("message", "Home Assistant /api/history/period response was not an array.");
+    }
+  });
+
+  it("discards malformed entries and preserves nested arrays", async () => {
+    stubResponse(
+      new Response(
+        JSON.stringify([
+          [state("sensor.sleep_score", "82"), "bad-entry"],
+          [
+            {
+              entity_id: "",
+              state: "90",
+              attributes: {},
+              last_changed: "2026-06-29T05:00:00.000Z",
+              last_updated: "2026-06-29T05:00:00.000Z",
+            },
+            state("sensor.garmin_connect_training_readiness", "84"),
+          ],
+        ]),
+        { status: 200 },
+      ),
+    );
+
+    const result = await fetchHomeAssistantHistory(config, {
+      start: new Date("2026-06-28T00:00:00.000Z"),
+      end: new Date("2026-06-29T00:00:00.000Z"),
+      entityIds: ["sensor.sleep_score", "sensor.garmin_connect_training_readiness"],
+    });
+
+    expect(result).toEqual([
+      [state("sensor.sleep_score", "82")],
+      [state("sensor.garmin_connect_training_readiness", "84")],
+    ]);
   });
 });
 

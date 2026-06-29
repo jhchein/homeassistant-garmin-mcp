@@ -1,7 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import * as z from "zod/v4";
 
 import { getCurrentStatsEnvelope } from "./currentStats.js";
+import { readRecentStats } from "./recentStats.js";
 
 export { getCurrentStatsEnvelope } from "./currentStats.js";
 
@@ -22,6 +24,27 @@ export function createServer(): McpServer {
       ],
     };
   });
+
+  server.registerTool(
+    "get_recent_stats",
+    {
+      description: "Return factual recent Garmin-derived stats from Home Assistant.",
+      inputSchema: z.object({
+        days: z.number().int().min(1).max(28).default(7),
+      }),
+    },
+    async (args) => {
+      const result = await readRecentStats({ days: args.days });
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(result.envelope, null, 2),
+          },
+        ],
+      };
+    },
+  );
 
   return server;
 }
