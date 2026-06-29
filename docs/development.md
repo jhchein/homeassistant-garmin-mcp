@@ -95,6 +95,17 @@ npm run build
 npm audit --audit-level=moderate
 ```
 
+### npm audit exception for 0.2.0
+
+`npm audit --audit-level=moderate` reports moderate vulnerabilities through the
+dev dependency `markdownlint-cli2@0.22.1` and its transitive `js-yaml@4.1.1` and
+`markdown-it@14.1.1` dependencies. The latest `markdownlint-cli2` still uses
+those versions, and `npm audit fix --force` would downgrade markdownlint tooling
+to `markdownlint-cli2@0.12.1`.
+
+This is accepted for release 0.2.0 because markdownlint tooling is not included
+in the published npm package tarball. Revisit when an upstream fix is available.
+
 Use `npm run lint:fix` for safe local auto-fixes before rerunning the checks.
 
 Use `npm run smoke` only when validating local Home Assistant connectivity.
