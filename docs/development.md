@@ -92,11 +92,13 @@ npm run format:check
 npm test
 npm run test:coverage
 npm run build
-npm audit --audit-level=moderate
+npm audit --omit=dev --audit-level=moderate
 ```
 
 ### npm audit exception for 0.2.0
 
+The release-blocking audit gate is `npm audit --omit=dev --audit-level=moderate`
+because the published npm package does not include dev dependencies. A full
 `npm audit --audit-level=moderate` reports moderate vulnerabilities through the
 dev dependency `markdownlint-cli2@0.22.1` and its transitive `js-yaml@4.1.1` and
 `markdown-it@14.1.1` dependencies. The latest `markdownlint-cli2` still uses
